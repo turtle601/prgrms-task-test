@@ -29,11 +29,6 @@ function Nodes(props) {
     this.$target.innerHTML = this.template();
   };
 
-  this.setState = (newData) => {
-    this.setState({ ...this.state, ...newData });
-    this.render();
-  };
-
   this.setEvent = () => {
     this.$target.addEventListener("click", (e) => {
       const target = e.target.closest(".Node");
