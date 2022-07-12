@@ -8,7 +8,7 @@ function Breadcrumb(props) {
     return this.path
       .map((p) => {
         return `
-          <div data-path = ${p.name}>${p.name}</div>
+          <div data-pathid = ${p.id}>${p.name}</div>
         `;
       })
       .join("");
@@ -18,17 +18,11 @@ function Breadcrumb(props) {
     this.$target.innerHTML = this.template();
   };
 
-  this.setState = (newData) => {
-    this.setState({ ...this.state, ...newData });
-    this.render();
-  };
-
-  this.mounted = () => {};
-
   this.setEvent = () => {
     this.$target.addEventListener("click", (e) => {
-      console.log(e.target.dataset);
-      console.log(e.target.dataset.path);
+      const { pathid } = e.target.dataset;
+      console.log(pathid);
+      props.clickTree(pathid);
 
       // 해당 path에 따라 데이터 제렌더링
     });

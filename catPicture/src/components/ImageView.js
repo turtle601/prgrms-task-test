@@ -1,6 +1,8 @@
 function ImageViewer(props) {
   this.$target = props.$target; //.Modal
-  this.state = {};
+  this.state = {
+    modal: true,
+  };
 
   this.template = () => {
     return `
@@ -15,17 +17,39 @@ function ImageViewer(props) {
   };
 
   this.render = () => {
-    this.$target.innerHTML = this.template();
+    const { modal } = this.state;
+
+    if (modal) {
+      this.$target.innerHTML = this.template();
+    } else {
+      this.$target.innerHTML = "";
+    }
   };
 
-  this.setState = () => {};
+  this.setState = (newData) => {
+    this.state = { ...this.state, ...newData };
+    this.render();
+  };
 
-  this.mounted = () => {};
+  this.setEvent = () => {
+    this.$target.addEventListener("click", (e) => {
+      if (e.target.tagName !== "IMG") {
+        this.setState({ modal: false });
+      }
+    });
 
-  this.setEvent = () => {};
+    window.addEventListener("keydown", (e) => {
+      const { modal } = this.state;
+
+      if (e.key === "Escape" && modal) {
+        this.setState({ modal: false });
+      }
+    });
+  };
 
   this.main = () => {
     this.render();
+    this.setEvent();
   };
 
   this.main();
