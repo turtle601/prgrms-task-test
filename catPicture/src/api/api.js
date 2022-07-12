@@ -3,7 +3,7 @@ export const getRootApi = async () => {
     "https://zl3m4qq0l9.execute-api.ap-northeast-2.amazonaws.com/dev/"
   );
 
-  return await rootData.json();
+  return rootData.ok ? await rootData.json() : rootData.ok;
 };
 
 export const getFileApi = async (id) => {
@@ -11,5 +11,5 @@ export const getFileApi = async (id) => {
     `https://zl3m4qq0l9.execute-api.ap-northeast-2.amazonaws.com/dev/${id}`
   );
 
-  return await fileData.json();
+  return fileData.ok ? await fileData.json() : fileData.ok;
 };

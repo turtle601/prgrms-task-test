@@ -11,6 +11,7 @@ import Breadcrumb from "./components/Breadcrumb.js";
 import Nodes from "./components/Node.js";
 import ImageViewer from "./components/ImageView.js";
 import Loading from "./components/Loading.js";
+import ErrorComponent from "./components/ErrorComponent.js";
 
 function App($target) {
   this.root = $target;
@@ -19,12 +20,14 @@ function App($target) {
     path: [],
     directory: [],
     loading: false,
+    error: false,
   };
 
   this.cache = new Cache();
 
   this.template = () => {
     return `
+      <div class = "Error"></div>
       <nav class = "Breadcrumb"></nav>
       <div class = "Nodes"></div>
       <div class = "Modal-container"></div>
@@ -34,6 +37,11 @@ function App($target) {
 
   this.render = () => {
     this.root.innerHTML = this.template();
+
+    new ErrorComponent({
+      $target: getDom(".Error"),
+      error: this.state.error,
+    });
 
     new Breadcrumb({
       $target: getDom(".Breadcrumb"),
@@ -65,13 +73,18 @@ function App($target) {
 
     const rootData = await getRootApi();
 
-    this.setState({
-      loading: false,
-      path: [{ id: "root", name: "root" }],
-      directory: rootData,
-    });
+    if (!rootData) {
+      this.setState({ loading: false, error: true });
+    } else {
+      this.setState({
+        loading: false,
+        path: [{ id: "root", name: "root" }],
+        directory: rootData,
+        error: false,
+      });
 
-    this.cache.setCache("root", rootData);
+      this.cache.setCache("root", rootData);
+    }
   };
 
   this.main = async () => {
@@ -89,13 +102,18 @@ function App($target) {
 
       const fileData = await getFileApi(id);
 
-      this.setState({
-        loading: false,
-        path: [...this.state.path, { id, name }],
-        directory: fileData,
-      });
+      if (!fileData) {
+        this.setState({ loading: false, error: true });
+      } else {
+        this.setState({
+          loading: false,
+          path: [...this.state.path, { id, name }],
+          directory: fileData,
+          error: false,
+        });
 
-      this.cache.setCache(id, fileData);
+        this.cache.setCache(id, fileData);
+      }
     }
   };
 
