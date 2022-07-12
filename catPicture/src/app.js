@@ -53,8 +53,6 @@ function App($target) {
       $target: getDom(".Loading-container"),
       loading: this.state.loading,
     });
-
-    console.log(this.cache._cache);
   };
 
   this.setState = (newData) => {
@@ -69,11 +67,11 @@ function App($target) {
 
     this.setState({
       loading: false,
-      path: [{ id: "null", name: "root" }],
+      path: [{ id: "root", name: "root" }],
       directory: rootData,
     });
 
-    this.cache.setCache("null", rootData);
+    this.cache.setCache("root", rootData);
   };
 
   this.main = async () => {
@@ -105,8 +103,6 @@ function App($target) {
     const n = this.state.path.length;
     const { id } = this.state.path[n - 2];
 
-    console.log(n, id);
-
     this.setState({
       path: this.state.path.slice(0, n - 1),
       directory: this.cache.getCache(id),
@@ -122,15 +118,15 @@ function App($target) {
 
   this.clickTree = (pathId) => {
     const { path } = this.state;
-    let flag = 0;
+    let flagIdx = 0;
 
-    path.forEach((p, idx) => {
-      if (p.id === pathId) flag = idx;
+    path.forEach((pathItem, idx) => {
+      if (pathItem.id === pathId) flagIdx = idx;
     });
 
     this.setState({
       path: path.filter((_, idx) => {
-        return idx <= flag;
+        return idx <= flagIdx;
       }),
 
       directory: this.cache.getCache(pathId),
